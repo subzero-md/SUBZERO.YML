@@ -97,7 +97,7 @@ jobs:
               if [ $attempt -gt 1 ]; then
                 echo "Waiting before restart..."
                 sleep 10
-              else
+              else 5.00
                 sleep 5
               fi
             done
