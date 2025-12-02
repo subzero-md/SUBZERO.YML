@@ -1,4 +1,4 @@
-name: SUBZERO-MD-DEPLOY-YML
+name: SUBZERO-MD-DEPLOY
 on:
   workflow_dispatch:
 jobs:
