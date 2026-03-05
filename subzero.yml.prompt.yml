@@ -1,0 +1,6 @@
+messages:
+  - role: user
+    content: Enable
+model: openai/gpt-4o
+testData: []
+evaluators: []
