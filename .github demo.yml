@@ -1,5 +1,7 @@
 name: SUBZERO-MD-DEPLOY
 on:
+  workfloname: SUBZERO-MD-DEPLOY
+on:
   workflow_dispatch:
 jobs:
   deploy:
@@ -93,84 +95,3 @@ jobs:
                 dmesg | tail -5 2>/dev/null || echo "No system messages available"
               fi
               
-              attempt=$((attempt + 1))
-              if [ $attempt -gt 1 ]; then
-                echo "Waiting before restart..."
-                sleep 10
-              else
-                sleep 5
-              fi
-            done
-          ' || echo "Timeout reached after 5 hours"
-          
-      - name: Post-Run Analysis
-        if: always()
-        run: |
-          echo "=== POST-RUN ANALYSIS ==="
-          echo "Final timestamp: $(date)"
-          echo "Checking for any log files:"
-          find . -name "*.log" -type f 2>/dev/null || echo "No log files found"
-          echo "=== FINAL SYSTEM STATE ==="
-          free -h
-          df -h
-          
-      - name: Re-Trigger Workflow
-        if: always()
-        run: |
-          echo "=== AUTO-RESTART ==="
-          echo "Preparing to restart workflow at $(date)"
-          sleep 30
-          curl -X POST \
-            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-            -H "Accept: application/vnd.github.v3+json" \
-            https://api.github.com/repos/${{ github.repository }}/actions/workflows/deploy.yml/dispatches \
-            -d '{"ref":"${{ github.ref_name }}"}'
-          echo "Restart triggered successfully"
-          {
-  "name": "data-uri-to-buffer",
-  "version": "6.0.2",
-  "description": "Create an ArrayBuffer instance from a Data URI string",
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
-  "exports": {
-    "node": "./dist/node.js",
-    "default": "./dist/index.js"
-  },
-  "files": [
-    "dist"
-  ],
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/TooTallNate/proxy-agents.git",
-    "directory": "packages/data-uri-to-buffer"
-  },
-  "engines": {
-    "node": ">= 14"
-  },
-  "keywords": [
-    "data",
-    "uri",
-    "datauri",
-    "data-uri",
-    "buffer",
-    "convert",
-    "rfc2397",
-    "2397"
-  ],
-  "author": "Nathan Rajlich <nathan@tootallnate.net> (http://n8.io/)",
-  "license": "MIT",
-  "devDependencies": {
-    "@types/jest": "^27.0.2",
-    "@types/node": "^14.18.45",
-    "jest": "^29.5.0",
-    "ts-jest": "^29.1.0",
-    "typescript": "^5.0.4",
-    "tsconfig": "0.0.0"
-  },
-  "scripts": {
-    "build": "tsc",
-    "test": "jest --env node --verbose --bail",
-    "lint": "eslint . --ext .ts",
-    "pack": "node ../../scripts/pack.mjs"
-  }
-}
